@@ -28,7 +28,24 @@ const create: RequestHandler = async ({body},res) => {
 
 
 
-const getAll: RequestHandler = async (req,res) => {}
+const getAll: RequestHandler = async (req, res) => {
+    try {
+      const result = await Product.find().exec();
+  
+      const response = {
+        count: result.length,
+        products: result.map(({ _id, name, price }) => ({
+          _id,
+          name,
+          price,
+        })),
+      };
+  
+      res.status(200).json(response);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  };
 const getOne: RequestHandler = async (req,res) => {}
 const update: RequestHandler = async ({body, params},res) => {}
 const destroy: RequestHandler = async ({query},res) => {}
