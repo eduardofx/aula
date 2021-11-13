@@ -9,4 +9,7 @@ router.post('/', authController.checkAuth, productsController.create);
 
 router.get('/', authController.checkAuth, productsController.getAll);
 
+
+router.get('/:productId', productsController.getOne);
+
 export default router;

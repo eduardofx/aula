@@ -26,8 +26,6 @@ const create: RequestHandler = async ({body},res) => {
         }
 }
 
-
-
 const getAll: RequestHandler = async (req, res) => {
     try {
       const result = await Product.find().exec();
@@ -46,7 +44,27 @@ const getAll: RequestHandler = async (req, res) => {
       res.status(500).json(error);
     }
   };
-const getOne: RequestHandler = async (req,res) => {}
+
+
+const getOne: RequestHandler = async ({params},res) => {
+  const { productId } = params;
+
+  try {
+    const result = await Product.findById(productId)
+      .select("_id name price image")
+      .exec();
+
+    if (result) {
+      res.status(200).json(result);
+    } else {
+      res.status(404).json({ message: "Product not found" });
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}
+
+
 const update: RequestHandler = async ({body, params},res) => {}
 const destroy: RequestHandler = async ({query},res) => {}
 
