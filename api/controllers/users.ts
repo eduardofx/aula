@@ -39,4 +39,32 @@ const signUp: RequestHandler = async ({ body }, res) => {
 }
 
 
-export default {signUp}
+const signIn: RequestHandler = async ({ body }, res) => {
+  const user = await User.findOne({ email: body.email }).exec();
+  if (!user) {
+    res.status(401).json({ message: 'Auth failed' });
+  } else{
+    bcrypt.compare(body.password, user.password, (err, same) => {
+      if (err) {
+        res.status(500).json(err);
+      }
+      if (same) {
+        const token = jwt.sign(
+          { email: user.email, userId: user._id },
+          'secret',
+          { expiresIn: '4h' }
+        );
+
+        res
+          .status(201)
+          .set({ 'access-token': token, 'token-type': 'Bearer' })
+          .json({ token });
+      } else {
+        res.status(401).json({ message: 'Ocorreu um erro' });
+      }
+
+    })
+  }
+}
+
+export default {signUp,signIn}
